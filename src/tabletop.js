@@ -135,7 +135,7 @@
     this.modelNames = [];
     this.model_names = this.modelNames; //jshint ignore:line
 
-    this.baseJsonPath = '/feeds/worksheets/' + this.key + '/public/basic?alt=';
+    this.baseJsonPath = '/feeds/worksheets/' + this.key + '/private/basic?alt=';
 
     if (inNodeJS || supportsCORS) {
       this.baseJsonPath += 'json';
@@ -143,7 +143,7 @@
       this.baseJsonPath += 'json-in-script';
     }
     // Added for PBX. Adds the authorisation token to the end of the path
-    this.base_json_path += '&oauth_token=' + get_auth_token();
+    this.baseJsonPath += '&oauth_token=' + get_auth_token();
     // end of added for PBX.
     
     if(!this.wait) {
@@ -349,7 +349,7 @@
           // Added for PBX. Fix sheetId to 1
           sheetId=1;
           // End of added for PBX
-          var jsonPath = '/feeds/list/' + this.key + '/' + sheetId + '/public/values?alt=';
+          var jsonPath = '/feeds/list/' + this.key + '/' + sheetId + '/private/values?alt=';
           if (inNodeJS || supportsCORS) {
             jsonPath += 'json';
           } else {
@@ -365,6 +365,7 @@
           if (this.reverse) {
             jsonPath += '&reverse=true';
           }
+          jsonPath += '&oauth_token=' + get_auth_token();
           toLoad.push(jsonPath);
         }
       }
@@ -525,6 +526,7 @@
       }
         
       var cellurl = this.raw.feed.link[3].href.replace('/feeds/list/', '/feeds/cells/').replace('https://spreadsheets.google.com', '');
+      cellurl+='&oauth_token=' + get_auth_token();
       var that = this;
       this.tabletop.requestData(cellurl, function(data) {
         that.loadPrettyColumns(data);

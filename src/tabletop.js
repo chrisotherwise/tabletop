@@ -1,6 +1,16 @@
 (function() {
   'use strict';
 
+  // Added for PBX. Returns the pre-generated auth token to allow private sheets to be requested
+
+  function get_auth_token()
+  {
+    console.log("getting auth:",window.oauth_token);
+    return window.oauth_token;
+  }
+
+  // End of added for PBX
+
   var inNodeJS = false;
   if (typeof process !== 'undefined' && !process.browser) {
     inNodeJS = true;
@@ -132,6 +142,9 @@
     } else {
       this.baseJsonPath += 'json-in-script';
     }
+    // Added for PBX. Adds the authorisation token to the end of the path
+    this.base_json_path += '&oauth_token=' + get_auth_token();
+    // end of added for PBX.
     
     if(!this.wait) {
       this.fetch();
@@ -333,6 +346,9 @@
         if (this.isWanted(data.feed.entry[i].content.$t)) {
           var linkIdx = data.feed.entry[i].link.length-1;
           var sheetId = data.feed.entry[i].link[linkIdx].href.split('/').pop();
+          // Added for PBX. Fix sheetId to 1
+          sheetId=1;
+          // End of added for PBX
           var jsonPath = '/feeds/list/' + this.key + '/' + sheetId + '/public/values?alt=';
           if (inNodeJS || supportsCORS) {
             jsonPath += 'json';
